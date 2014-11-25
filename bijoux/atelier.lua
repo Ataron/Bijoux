@@ -3,7 +3,7 @@
 atelier = {}
 atelier.recipes = {}
 function atelier.register_recipe(parameters)
-	print("Atelier :")
+	--[[print("Atelier :")
 	print(atelier)
 	print("Atelier recipes :")
 	print(atelier.recipes)
@@ -16,27 +16,36 @@ function atelier.register_recipe(parameters)
 	print("Input :")
 	print(parameters.input)
 	print("Duration :")
-	print(parameters.duration)
+	print(parameters.duration)]]--
+	atelier.recipes[parameters.input] = {}
 	if parameters.output == nil then
 		return 
 	end
 	if parameters.intput ~= nil then
-		atelier.recipes[parameters.output].input = parameters.input
+		atelier.recipes[parameters.intput].output = parameters.input
 	end
 	if parameters.duration ~= nil then
-		atelier.recipes[parameters.output].duration = parameters.duration
+		atelier.recipes[parameters.input].duration = parameters.duration
 	end
 	if parameters.tool ~= nil then
-		atelier.recipes[parameters.output].tool = parameters.tool
+		atelier.recipes[parameters.input].tool = parameters.tool
 	end
 end
+
+atelier.register_recipe({
+	output = "default:mese",
+	input = "bijoux:perle_imparfaite",
+	tool = "default:pick_wood",
+	duration = 5
+})
+	
 
 atelier_formspec = 
 	"size[8,9]"..
 	"image[2,2;1,1;bijoux_atelier_pioche_bg.png]"..
-	"list[current_name;oat;2,3;1,1;]"..
-	"list[current_name;outils;2,1;1,1;]"..
-	"list[current_name;oti;5,1;2,2;]"..
+	"list[current_name;output;2,3;1,1;]"..
+	"list[current_name;input;2,1;1,1;]"..
+	"list[current_name;tool;5,1;2,2;]"..
 	"list[current_player;main;0,5;8,4;]"
 	
 minetest.register_node("bijoux:atelier", {
@@ -53,19 +62,19 @@ minetest.register_node("bijoux:atelier", {
     meta:set_string("formspec", atelier_formspec)
     meta:set_string("infotext", "Atelier")
     local inv = meta:get_inventory()
-    inv:set_size("oat", 1)
-    inv:set_size("outils", 1)
-    inv:set_size("oti", 1)
+    inv:set_size("output", 1)
+    inv:set_size("input", 1)
+    inv:set_size("tool", 1)
   end,
 
   can_dig = function(pos,player)
     local meta = minetest.get_meta(pos);
     local inv = meta:get_inventory()
-    if not inv:is_empty("oat") then
+    if not inv:is_empty("output") then
       return false
-    elseif not inv:is_empty("oti") then
+    elseif not inv:is_empty("tool") then
       return false
-    elseif not inv:is_empty("outils") then
+    elseif not inv:is_empty("input") then
       return false
     end
     return true
@@ -74,19 +83,19 @@ minetest.register_node("bijoux:atelier", {
   allow_metadata_inventory_put = function(pos, listname, index, stack, player)
     local meta = minetest.get_meta(pos)
     local inv = meta:get_inventory()
-    print(listname)
-    if listname == "outils" then
-      if minetest.get_craft_result({method="fuel",width=1,items={stack}}).time ~= 0 then
-        if inv:is_empty("outils") then
+    --print(listname)
+    if listname == "input" then
+      if atelier.recipes[stack:get_name()] then
+        if inv:is_empty("tool") then
           meta:set_string("infotext","Aucun outil present!")
         end
         return stack:get_count()
       else
         return 0
       end
-    elseif listname == "oat" then
+    elseif listname == "output" then
       return stack:get_count()
-    elseif listname == "oti" then
+    elseif listname == "tool" then
       return 0
     end
   end,
