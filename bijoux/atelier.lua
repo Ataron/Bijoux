@@ -3,37 +3,24 @@
 atelier = {}
 atelier.recipes = {}
 function atelier.register_recipe(parameters)
-	--[[print("Atelier :")
-	print(atelier)
-	print("Atelier recipes :")
-	print(atelier.recipes)
-	print("Atelier register recipes :")
-	print(atelier.register_recipes)
-	print("Parameters :")
-	print(parameters)
-	print("Output :")
-	print(parameters.output)
-	print("Input :")
-	print(parameters.input)
-	print("Duration :")
-	print(parameters.duration)]]--
-	atelier.recipes[parameters.input] = {}
 	if parameters.output == nil then
-		return 
+		minetest.log("error", "Failed to register atelier's craft recipe : No output itemstring given.")
+		return
+	elseif parameters.input == nil
+		or parameters.tool == nil
+		or parameters.duration == nil then
+		
+		minetest.log("error", "Failed to register atelier's craft recipe for "..parameters.output..".")
+		return
 	end
-	if parameters.input ~= nil then
-		atelier.recipes[parameters.input].output = parameters.output
-	end
-	if parameters.duration ~= nil then
-		atelier.recipes[parameters.input].duration = parameters.duration
-	end
-	if parameters.tool ~= nil then
-		atelier.recipes[parameters.input].tool = parameters.tool
-	end
+	atelier.recipes[parameters.input] = {}
+	atelier.recipes[parameters.input].output = parameters.output
+	atelier.recipes[parameters.input].duration = parameters.duration
+	atelier.recipes[parameters.input].tool = parameters.tool
 end
 
 atelier.register_recipe({
-	output = "default:mese",
+	output = "bijoux:perle",
 	input = "bijoux:perle_imparfaite",
 	tool = "default:pick_wood",
 	duration = 5
@@ -83,7 +70,6 @@ minetest.register_node("bijoux:atelier", {
   allow_metadata_inventory_put = function(pos, listname, index, stack, player)
     local meta = minetest.get_meta(pos)
     local inv = meta:get_inventory()
-    --print(listname)
     if listname == "input" then
       if atelier.recipes[stack:get_name()] then
         if inv:is_empty("tool") then
@@ -108,26 +94,28 @@ minetest.register_abm({
 	action = function(pos, node, active_object_count, active_object_count_wider)
 		meta = minetest.get_meta(pos)
 		inv = meta:get_inventory()
-		print("?")
+		
 		inputstack = inv:get_list("input")[1]
 		outputstack = inv:get_list("output")[1]
 		toolstack = inv:get_list("tool")[1]
 		
-		print("input "..inputstack:get_name())
-		print("output "..outputstack:get_name())
-		print("tool "..toolstack:get_name())
-		
-		if inv:get_list("input")[1]:get_name() ~= "" 
-			and inv:get_list("output")[1]:get_name() == "" 
-			and inv:get_list("tool")[1]:get_name() ~= "" 
-			and atelier.recipes[inv:get_list("input")[1]:get_name()] ~= nil 
-			and atelier.recipes[inv:get_list("input")[1]:get_name()].output ~= nil then
-			print("!")
+		if inv:get_list("input")[1]:get_name() ~= ""
+			and inv:get_list("tool")[1]:get_name() == atelier.recipes[inputstack:get_name()].tool
+			and atelier.recipes[inv:get_list("input")[1]:get_name()].output ~= nil
+			and (inv:get_list("output")[1]:get_name() == "" 
+				or inv:get_list("output")[1]:get_name() == atelier.recipes[inputstack:get_name()].output) then
+			
+			inv:set_list("output", {[1] = atelier.recipes[inputstack:get_name()].output.." "..outputstack:get_count()+1})
+			
+			inputstack:set_count(inputstack:get_count()-1)
+			inv:set_list("input",{[1] = inputstack})
 
-			--inputstack:set_count(inputstack:get_count()-1)
-			inv:set_list("input",{[1] = inputstack:get_name().." "..inputstack:get_count()-1})
-			inv:set_list("output", {[1] = atelier.recipes[inputstack:get_name()].output})
-			toolstack:set_wear(toolstack:get_wear()-10)
+			if toolstack:get_wear()+10000 > 65534 then
+				inv:set_list("tool",{[1] = ""})
+			else
+				toolstack:set_wear(toolstack:get_wear()+10000)
+				inv:set_list("tool",{[1] = toolstack})
+			end
 		end
 	end,
 })
