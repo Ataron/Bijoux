@@ -21,8 +21,8 @@ function atelier.register_recipe(parameters)
 	if parameters.output == nil then
 		return 
 	end
-	if parameters.intput ~= nil then
-		atelier.recipes[parameters.intput].output = parameters.input
+	if parameters.input ~= nil then
+		atelier.recipes[parameters.input].output = parameters.output
 	end
 	if parameters.duration ~= nil then
 		atelier.recipes[parameters.input].duration = parameters.duration
@@ -43,9 +43,9 @@ atelier.register_recipe({
 atelier_formspec = 
 	"size[8,9]"..
 	"image[2,2;1,1;bijoux_atelier_pioche_bg.png]"..
-	"list[current_name;output;2,3;1,1;]"..
+	"list[current_name;tool;2,3;1,1;]"..
 	"list[current_name;input;2,1;1,1;]"..
-	"list[current_name;tool;5,1;2,2;]"..
+	"list[current_name;output;5,1;2,2;]"..
 	"list[current_player;main;0,5;8,4;]"
 	
 minetest.register_node("bijoux:atelier", {
@@ -94,9 +94,40 @@ minetest.register_node("bijoux:atelier", {
         return 0
       end
     elseif listname == "output" then
-      return stack:get_count()
-    elseif listname == "tool" then
       return 0
+    elseif listname == "tool" then
+      return 1
     end
   end,
+})
+
+minetest.register_abm({
+	nodenames = {"bijoux:atelier"},
+	interval = 1.0,
+	chance = 1,
+	action = function(pos, node, active_object_count, active_object_count_wider)
+		meta = minetest.get_meta(pos)
+		inv = meta:get_inventory()
+		print("?")
+		inputstack = inv:get_list("input")[1]
+		outputstack = inv:get_list("output")[1]
+		toolstack = inv:get_list("tool")[1]
+		
+		print("input "..inputstack:get_name())
+		print("output "..outputstack:get_name())
+		print("tool "..toolstack:get_name())
+		
+		if inv:get_list("input")[1]:get_name() ~= "" 
+			and inv:get_list("output")[1]:get_name() == "" 
+			and inv:get_list("tool")[1]:get_name() ~= "" 
+			and atelier.recipes[inv:get_list("input")[1]:get_name()] ~= nil 
+			and atelier.recipes[inv:get_list("input")[1]:get_name()].output ~= nil then
+			print("!")
+
+			--inputstack:set_count(inputstack:get_count()-1)
+			inv:set_list("input",{[1] = inputstack:get_name().." "..inputstack:get_count()-1})
+			inv:set_list("output", {[1] = atelier.recipes[inputstack:get_name()].output})
+			toolstack:set_wear(toolstack:get_wear()-10)
+		end
+	end,
 })
