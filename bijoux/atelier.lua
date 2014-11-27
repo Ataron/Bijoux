@@ -19,14 +19,6 @@ function atelier.register_recipe(parameters)
 	atelier.recipes[parameters.input].tool = parameters.tool
 end
 
-atelier.register_recipe({
-	output = "bijoux:perle",
-	input = "bijoux:perle_imparfaite",
-	tool = "default:pick_wood",
-	duration = 5
-})
-	
-
 atelier_formspec = 
 	"size[8,9]"..
 	"image[2,2;1,1;bijoux_atelier_pioche_bg.png]"..
@@ -48,7 +40,7 @@ minetest.register_node("bijoux:atelier", {
     local meta = minetest.get_meta(pos)
     meta:set_string("formspec", atelier_formspec)
     meta:set_string("infotext", "Atelier")
-    local inv = meta:get_inventory()
+	local inv = meta:get_inventory()
     inv:set_size("output", 1)
     inv:set_size("input", 1)
     inv:set_size("tool", 1)
@@ -118,4 +110,62 @@ minetest.register_abm({
 			end
 		end
 	end,
+})
+
+
+
+-- Registering
+
+atelier.register_recipe({
+	output = "bijoux:perle",
+	input = "bijoux:perle_imparfaite",
+	tool = "bijoux:pioche",
+	duration = 5
+})
+
+
+atelier.register_recipe({
+	output = "bijoux:emeraude",
+	input = "bijoux:emeraude_imparfaite",
+	tool = "bijoux:pioche",
+	duration = 5
+})
+
+
+atelier.register_recipe({
+	output = "bijoux:jade",
+	input = "bijoux:jade_imparfait",
+	tool = "bijoux:pioche",
+	duration = 5
+})
+
+
+atelier.register_recipe({
+	output = "bijoux:lapis_lazuli",
+	input = "bijoux:lapis_lazuli_imparfait",
+	tool = "bijoux:pioche",
+	duration = 5
+})
+
+
+atelier.register_recipe({
+	output = "bijoux:rubis",
+	input = "bijoux:rubis_imparfait",
+	tool = "bijoux:pioche",
+	duration = 5
+})
+
+
+atelier.register_recipe({
+	output = "bijoux:saphir",
+	input = "bijoux:saphir_imparfait",
+	tool = "bijoux:pioche",
+	duration = 5
+})
+
+atelier.register_recipe({
+	output = "bijoux:topaze",
+	input = "bijoux:topaze_imparfait",
+	tool = "bijoux:pioche",
+	duration = 5
 })
