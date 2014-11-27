@@ -7,7 +7,7 @@ function atelier.register_recipe(parameters)
 		minetest.log("error", "Failed to register atelier's craft recipe : No output itemstring given.")
 		return
 	elseif parameters.input == nil
-		or parameters.tool == nil
+		--or parameters.tool == nil
 		or parameters.duration == nil then
 		
 		minetest.log("error", "Failed to register atelier's craft recipe for "..parameters.output..".")
@@ -16,7 +16,7 @@ function atelier.register_recipe(parameters)
 	atelier.recipes[parameters.input] = {}
 	atelier.recipes[parameters.input].output = parameters.output
 	atelier.recipes[parameters.input].duration = parameters.duration
-	atelier.recipes[parameters.input].tool = parameters.tool
+	--atelier.recipes[parameters.input].tool = parameters.tool
 end
 
 atelier_formspec = 
@@ -78,6 +78,11 @@ minetest.register_node("bijoux:atelier", {
     elseif listname == "output" then
 		return 0
     elseif listname == "tool" then
+		if not minetest.registered_tools[stack:get_name()]
+			or not minetest.registered_tools[stack:get_name()].tool_capabilities.groupcaps.cracky then
+			return 0
+		end
+		
 		if inv:is_empty("input") then
 			meta:set_string("infotext","Aucun item à tailler!")
         else
@@ -85,6 +90,26 @@ minetest.register_node("bijoux:atelier", {
 		end
 		return 1
     end
+  end,
+  
+  on_metadata_inventory_take = function(pos, listname, index, stack, player)
+	
+	local meta = minetest.get_meta(pos)
+	local inv = meta:get_inventory()
+	
+	if listname == "tool" and inv:is_empty("tool") then
+		if inv:is_empty("input") then
+			meta:set_string("infotext","Atelier")
+		else
+			meta:set_string("infotext","Aucun outil present!")
+		end
+	elseif listname == "input" and inv:is_empty("input") then
+		if inv:is_empty("tool") then
+			meta:set_string("infotext","Atelier")
+		else
+			meta:set_string("infotext","Aucun item à tailler!")
+		end
+	end
   end,
 })
 
@@ -101,7 +126,7 @@ minetest.register_abm({
 		toolstack = inv:get_list("tool")[1]
 		
 		if inv:get_list("input")[1]:get_name() ~= ""
-			and inv:get_list("tool")[1]:get_name() == atelier.recipes[inputstack:get_name()].tool
+			and inv:get_list("tool")[1]:get_name() ~= ""
 			and atelier.recipes[inv:get_list("input")[1]:get_name()].output ~= nil
 			and (inv:get_list("output")[1]:get_name() == "" 
 				or inv:get_list("output")[1]:get_name() == atelier.recipes[inputstack:get_name()].output) then
@@ -111,9 +136,12 @@ minetest.register_abm({
 			inputstack:set_count(inputstack:get_count()-1)
 			inv:set_list("input",{[1] = inputstack})
 
+			--print(toolstack:get_wear()+minetest.registered_tools[toolstack:get_name()].tool_capabilities.groupcaps.cracky.times[1]*1.5*10000)
+			--if toolstack:get_wear()+minetest.registered_tools[toolstack:get_name()].tool_capabilities.groupcaps.cracky.times[1]*1*10000 > 65534 then
 			if toolstack:get_wear()+10000 > 65534 then
 				inv:set_list("tool",{[1] = ""})
 			else
+				--toolstack:set_wear(toolstack:get_wear()+minetest.registered_tools[toolstack:get_name()].tool_capabilities.groupcaps.cracky.times[1]*1*10000 > 65534)
 				toolstack:set_wear(toolstack:get_wear()+10000)
 				inv:set_list("tool",{[1] = toolstack})
 			end
