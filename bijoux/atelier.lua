@@ -40,6 +40,8 @@ minetest.register_node("bijoux:atelier", {
     local meta = minetest.get_meta(pos)
     meta:set_string("formspec", atelier_formspec)
     meta:set_string("infotext", "Atelier")
+	meta:set_int("tick",0)
+	
 	local inv = meta:get_inventory()
     inv:set_size("output", 1)
     inv:set_size("input", 1)
@@ -66,15 +68,22 @@ minetest.register_node("bijoux:atelier", {
       if atelier.recipes[stack:get_name()] then
         if inv:is_empty("tool") then
           meta:set_string("infotext","Aucun outil present!")
-        end
+        else
+		  meta:set_string("infotext","Taille en cours...")
+		end
         return stack:get_count()
       else
         return 0
       end
     elseif listname == "output" then
-      return 0
+		return 0
     elseif listname == "tool" then
-      return 1
+		if inv:is_empty("input") then
+			meta:set_string("infotext","Aucun item à tailler!")
+        else
+			meta:set_string("infotext","Taille en cours...")
+		end
+		return 1
     end
   end,
 })
@@ -107,6 +116,16 @@ minetest.register_abm({
 			else
 				toolstack:set_wear(toolstack:get_wear()+10000)
 				inv:set_list("tool",{[1] = toolstack})
+			end
+			
+			toolstack = inv:get_list("tool")[1]
+			
+			if inputstack:is_empty() and toolstack:is_empty() then
+				meta:set_string("infotext","Atelier")
+			elseif toolstack:is_empty() then
+				meta:set_string("infotext","Aucun outil present!")
+			elseif inputstack:is_empty() then
+				meta:set_string("infotext","Aucun item à tailler!")
 			end
 		end
 	end,
