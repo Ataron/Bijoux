@@ -91,3 +91,15 @@ minetest.register_craftitem("bijoux:pioche", {
 	inventory_image = "bijoux_pioche.png",
 	groups={outils},
 })
+
+minetest.register_craftitem("bijoux:odr", {
+	description = "Outil de raffinage",
+	inventory_image = "bijoux_odr.png",
+	groups={outils},
+})
+
+minetest.register_craftitem("bijoux:odra", {
+	description = "Outil de raffinage avance",
+	inventory_image = "bijoux_odra.png",
+	groups={outils},
+})
