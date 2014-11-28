@@ -41,6 +41,7 @@ minetest.register_node("bijoux:atelier", {
     meta:set_string("formspec", atelier_formspec)
     meta:set_string("infotext", "Atelier")
 	meta:set_int("tick",0)
+	meta:set_string("status","disabled")
 	
 	local inv = meta:get_inventory()
     inv:set_size("output", 1)
@@ -67,7 +68,7 @@ minetest.register_node("bijoux:atelier", {
     if listname == "input" then
       if atelier.recipes[stack:get_name()] then
         if inv:is_empty("tool") then
-          meta:set_string("infotext","Aucun outil present!")
+		  meta:set_string("infotext","Aucun outil present!")
         else
 		  meta:set_string("infotext","Taille en cours...")
 		end
@@ -124,6 +125,17 @@ minetest.register_abm({
 		inputstack = inv:get_list("input")[1]
 		outputstack = inv:get_list("output")[1]
 		toolstack = inv:get_list("tool")[1]
+		
+		if not inv:is_empty("tool") and not inv:is_empty("input") then
+			if inv:is_empty("output") or (atelier.recipes[inputstack:get_name()] and atelier.recipes[inputstack:get_name()].output == outputstack:get_name()) then
+				meta:set_string("status","enable")
+			else
+				meta:set_string("status","disabled")
+			end
+		else
+			meta:set_string("status","disabled")
+		end
+		print(meta:get_string("status"))
 		
 		if inv:get_list("input")[1]:get_name() ~= ""
 			and inv:get_list("tool")[1]:get_name() ~= ""
