@@ -126,22 +126,32 @@ minetest.register_abm({
 		outputstack = inv:get_list("output")[1]
 		toolstack = inv:get_list("tool")[1]
 		
+		
+		if meta:get_string("status") == "enable" then
+			local upper = meta:get_int("tick")+1
+			meta:set_int("tick", meta:get_int("tick")+1)
+		else
+			meta:set_int("tick",0)
+		end
+		
 		if not inv:is_empty("tool") and not inv:is_empty("input") then
 			if inv:is_empty("output") or (atelier.recipes[inputstack:get_name()] and atelier.recipes[inputstack:get_name()].output == outputstack:get_name()) then
-				meta:set_string("status","enable")
+				meta:set_string("status","enable")			
 			else
 				meta:set_string("status","disabled")
 			end
 		else
 			meta:set_string("status","disabled")
 		end
-		print(meta:get_string("status"))
 		
 		if inv:get_list("input")[1]:get_name() ~= ""
 			and inv:get_list("tool")[1]:get_name() ~= ""
 			and atelier.recipes[inv:get_list("input")[1]:get_name()].output ~= nil
-			and (inv:get_list("output")[1]:get_name() == "" 
-				or inv:get_list("output")[1]:get_name() == atelier.recipes[inputstack:get_name()].output) then
+			and atelier.recipes[inputstack:get_name()].duration-1 <= meta:get_int("tick") then
+			
+			if not (inv:get_list("output")[1]:get_name() == "" or inv:get_list("output")[1]:get_name() == atelier.recipes[inputstack:get_name()].output) then return end
+			
+			meta:set_int("tick",0)
 			
 			inv:set_list("output", {[1] = atelier.recipes[inputstack:get_name()].output.." "..outputstack:get_count()+1})
 			
