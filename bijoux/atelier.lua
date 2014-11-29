@@ -116,7 +116,7 @@ minetest.register_node("bijoux:atelier", {
 
 minetest.register_abm({
 	nodenames = {"bijoux:atelier"},
-	interval = 1.0,
+	interval = 1,
 	chance = 1,
 	action = function(pos, node, active_object_count, active_object_count_wider)
 		meta = minetest.get_meta(pos)
@@ -128,7 +128,6 @@ minetest.register_abm({
 		
 		
 		if meta:get_string("status") == "enable" then
-			local upper = meta:get_int("tick")+1
 			meta:set_int("tick", meta:get_int("tick")+1)
 		else
 			meta:set_int("tick",0)
@@ -147,10 +146,7 @@ minetest.register_abm({
 		if inv:get_list("input")[1]:get_name() ~= ""
 			and inv:get_list("tool")[1]:get_name() ~= ""
 			and atelier.recipes[inv:get_list("input")[1]:get_name()].output ~= nil
-			and atelier.recipes[inputstack:get_name()].duration == meta:get_int("tick")-1 then
-			
-			print(atelier.recipes[inputstack:get_name()].duration)
-			print(meta:get_int("tick"))
+			and atelier.recipes[inputstack:get_name()].duration-1 <= meta:get_int("tick") then
 			
 			if not (inv:get_list("output")[1]:get_name() == "" or inv:get_list("output")[1]:get_name() == atelier.recipes[inputstack:get_name()].output) then return end
 			
@@ -192,7 +188,7 @@ atelier.register_recipe({
 	output = "bijoux:perle",
 	input = "bijoux:perle_imparfaite",
 	tool = "bijoux:pioche",
-	duration = 5
+	duration = 1
 })
 
 
@@ -200,7 +196,7 @@ atelier.register_recipe({
 	output = "bijoux:emeraude",
 	input = "bijoux:emeraude_imparfaite",
 	tool = "bijoux:pioche",
-	duration = 5
+	duration = 3
 })
 
 
@@ -208,7 +204,7 @@ atelier.register_recipe({
 	output = "bijoux:jade",
 	input = "bijoux:jade_imparfait",
 	tool = "bijoux:pioche",
-	duration = 5
+	duration = 3
 })
 
 
@@ -232,12 +228,12 @@ atelier.register_recipe({
 	output = "bijoux:saphir",
 	input = "bijoux:saphir_imparfait",
 	tool = "bijoux:pioche",
-	duration = 5
+	duration = 6
 })
 
 atelier.register_recipe({
 	output = "bijoux:topaze",
-	input = "bijoux:topaze_imparfait",
+	input = "bijoux:topaze_imparfaite",
 	tool = "bijoux:pioche",
-	duration = 5
+	duration = 7
 })
