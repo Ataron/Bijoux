@@ -147,7 +147,10 @@ minetest.register_abm({
 		if inv:get_list("input")[1]:get_name() ~= ""
 			and inv:get_list("tool")[1]:get_name() ~= ""
 			and atelier.recipes[inv:get_list("input")[1]:get_name()].output ~= nil
-			and atelier.recipes[inputstack:get_name()].duration-1 <= meta:get_int("tick") then
+			and atelier.recipes[inputstack:get_name()].duration == meta:get_int("tick")-1 then
+			
+			print(atelier.recipes[inputstack:get_name()].duration)
+			print(meta:get_int("tick"))
 			
 			if not (inv:get_list("output")[1]:get_name() == "" or inv:get_list("output")[1]:get_name() == atelier.recipes[inputstack:get_name()].output) then return end
 			
