@@ -1,4 +1,5 @@
 --- Atelier de bijoutier ---
+--- Dernière modification par Mg le 29/11/2014
 
 atelier = {}
 atelier.recipes = {}
