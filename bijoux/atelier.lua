@@ -1,5 +1,5 @@
 --- Atelier de bijoutier ---
---- Dernière modification par Mg le 02/12/2014
+--- Dernière modification par Mg le 29/11/2014
 
 atelier = {}
 atelier.recipes = {}
@@ -30,8 +30,8 @@ atelier_formspec =
 	
 minetest.register_node("bijoux:atelier", {
   description = "Atelier",
-  tiles = {"default_obsidian.png", "default_steel_block.png", "default_steel_block.png",
-    "default_steel_block.png", "default_steel_block.png", "bijoux_atelier_front.png"},
+  tiles = {"bijoux_atelier_down.png", "bijoux_atelier_down.png", "bijoux_atelier_side.png",
+    "bijoux_atelier_side.png", "bijoux_atelier_back.png", "bijoux_atelier_front.png"},
   paramtype2 = "facedir",
   groups = {crumbly=3},
   legacy_facedir_simple = true,
@@ -123,13 +123,6 @@ minetest.register_abm({
 		meta = minetest.get_meta(pos)
 		inv = meta:get_inventory()
 		
-		if not inv:get_list("input")
-			or not inv:get_list("output")
-			or not inv:get_list("output") then
-			return
-			-- Security.
-		end
-
 		inputstack = inv:get_list("input")[1]
 		outputstack = inv:get_list("output")[1]
 		toolstack = inv:get_list("tool")[1]
@@ -153,27 +146,25 @@ minetest.register_abm({
 		
 		if inv:get_list("input")[1]:get_name() ~= ""
 			and inv:get_list("tool")[1]:get_name() ~= ""
-			and atelier.recipes[inv:get_list("input")[1]:get_name()].output ~= nil then
+			and atelier.recipes[inv:get_list("input")[1]:get_name()].output ~= nil
+			and atelier.recipes[inputstack:get_name()].duration-1 <= meta:get_int("tick") then
 			
 			if not (inv:get_list("output")[1]:get_name() == "" or inv:get_list("output")[1]:get_name() == atelier.recipes[inputstack:get_name()].output) then return end
 			
-			if atelier.recipes[inputstack:get_name()].duration-1 <= meta:get_int("tick") then
+			meta:set_int("tick",0)
 			
-				meta:set_int("tick",0)
+			inv:set_list("output", {[1] = atelier.recipes[inputstack:get_name()].output.." "..outputstack:get_count()+1})
 			
-				inv:set_list("output", {[1] = atelier.recipes[inputstack:get_name()].output.." "..outputstack:get_count()+1})
-			
-				inputstack:set_count(inputstack:get_count()-1)
-				inv:set_list("input",{[1] = inputstack})
-			end
+			inputstack:set_count(inputstack:get_count()-1)
+			inv:set_list("input",{[1] = inputstack})
 
-			tool_numofgems = 20 - minetest.registered_tools[toolstack:get_name()].tool_capabilities.groupcaps.cracky.times[3]*10
-			
-			print(toolstack:get_wear()+65534/tool_numofgems)
-			if toolstack:get_wear()+65534/tool_numofgems >= 65534 then
+			--print(toolstack:get_wear()+minetest.registered_tools[toolstack:get_name()].tool_capabilities.groupcaps.cracky.times[1]*1.5*10000)
+			--if toolstack:get_wear()+minetest.registered_tools[toolstack:get_name()].tool_capabilities.groupcaps.cracky.times[1]*1*10000 > 65534 then
+			if toolstack:get_wear()+10000 > 65534 then
 				inv:set_list("tool",{[1] = ""})
 			else
-				toolstack:set_wear(toolstack:get_wear()+65534/tool_numofgems)
+				--toolstack:set_wear(toolstack:get_wear()+minetest.registered_tools[toolstack:get_name()].tool_capabilities.groupcaps.cracky.times[1]*1*10000 > 65534)
+				toolstack:set_wear(toolstack:get_wear()+10000)
 				inv:set_list("tool",{[1] = toolstack})
 			end
 			

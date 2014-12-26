@@ -4,10 +4,10 @@
  
 --- Taillés ---
 
- minetest.register_craftitem("bijoux:emeraude", {
-	description = "Emeraude Taillée",
-	inventory_image = "bijoux_emeraude.png",
-})
+-- minetest.register_craftitem("bijoux:emeraude", {
+--	description = "Emeraude Taillée",
+--	inventory_image = "bijoux_emeraude.png",
+-- })
 
  minetest.register_craftitem("bijoux:saphir", {
 	description = "Saphir Taillé",
@@ -41,7 +41,7 @@
 
 --- Imparfaits ---
 
-minetest.register_craftitem("bijoux:emeraude_imparfaite", {
+minetest.register_craftitem("bijoux:emeraude_imparfait", {
 	description = "Emeraude Imparfaite",
 	groups={oat},
 	inventory_image = "bijoux_emeraude_imparfaite.png",
@@ -59,7 +59,7 @@ minetest.register_craftitem("bijoux:rubis_imparfait", {
 	inventory_image = "bijoux_rubis_imparfait.png",
 })
 
-minetest.register_craftitem("bijoux:topaze_imparfaite", {
+minetest.register_craftitem("bijoux:topaze_imparfait", {
 	description = "Topaze Imparfaite",
 	groups={oat},
 	inventory_image = "bijoux_topaze_imparfaite.png",
@@ -78,7 +78,7 @@ minetest.register_craftitem("bijoux:lapis_lazuli_imparfait", {
 	inventory_image = "bijoux_lapis_lazuli_imparfait.png",
 })
 
-minetest.register_craftitem("bijoux:perle_imparfaite", {
+minetest.register_craftitem("bijoux:perle_imparfait", {
 	description = "Perle Imparfaite",
 	groups={oat},
 	inventory_image = "bijoux_perle_imparfaite.png",

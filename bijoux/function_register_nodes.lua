@@ -71,6 +71,7 @@ function bijoux.register_ore(subname, groups, images, description, sounds)
 		is_ground_content = true,
 		groups = groups,
 		sounds = sounds,
+		drop = "bijoux:".. subname .."_imparfait",
 	})
 end
 
@@ -92,35 +93,37 @@ bijoux.register_ore("lapis_lazuli",
 	"Lapis Lazuli Ore",
 	default.node_sound_stone_defaults())
 	
-function bijoux.register_ore(subname, groups, images, description, sounds)
+function bijoux.register_desert_ore(subname, groups, images, description, sounds, drop)
 	minetest.register_node(":bijoux:desert_stone_with_" .. subname, {
+		subname = subname,
 		description = description,
+		legacy_mineral = true,
 		tiles = images,
 		paramtype = "light",
 		is_ground_content = true,
 		groups = groups,
 		sounds = sounds,
+		drop = "bijoux:".. subname .."_imparfait",
 	})
 end
 
-bijoux.register_ore("rubis",
+bijoux.register_desert_ore("rubis",
 	{cracky=3},
 	{"default_stone.png^bijoux_rubis_ore.png"},
 	"Rubis Ore",
 	default.node_sound_stone_defaults())
 
-bijoux.register_ore("topaze",
+bijoux.register_desert_ore("topaze",
 	{cracky=3},
 	{"default_stone.png^bijoux_topaze_ore.png"},
 	"Topaze Ore",
 	default.node_sound_stone_defaults())
 
-bijoux.register_ore("jade",
+bijoux.register_desert_ore("jade",
 	{cracky=3},
 	{"default_stone.png^bijoux_jade_ore.png"},
 	"Jade Ore",
 	default.node_sound_stone_defaults())
-	
 	
 -- Autre --
 
@@ -131,7 +134,7 @@ minetest.register_node("bijoux:sand_with_perle", {
 	tiles = {"default_sand.png^bijoux_perle_ore.png"},
 	is_ground_content = true,
 	groups = {cracky=1},
-	drop = 'bijoux:perle_imparfaite',
+	drop = 'bijoux:perle_imparfait',
 	sounds = default.node_sound_stone_defaults(),
 })
 
