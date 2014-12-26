@@ -1,5 +1,5 @@
 --- Atelier de bijoutier ---
---- Dernière modification par Mg le 29/11/2014
+--- Dernière modification par Mg le 02/12/2014
 
 atelier = {}
 atelier.recipes = {}
@@ -18,6 +18,7 @@ function atelier.register_recipe(parameters)
 	atelier.recipes[parameters.input].output = parameters.output
 	atelier.recipes[parameters.input].duration = parameters.duration
 	--atelier.recipes[parameters.input].tool = parameters.tool
+	minetest.log("action", "Registered atelier's recipe for " .. parameters.input .. ".")
 end
 
 atelier_formspec = 
@@ -30,8 +31,8 @@ atelier_formspec =
 	
 minetest.register_node("bijoux:atelier", {
   description = "Atelier",
-  tiles = {"bijoux_atelier_down.png", "bijoux_atelier_down.png", "bijoux_atelier_side.png",
-    "bijoux_atelier_side.png", "bijoux_atelier_back.png", "bijoux_atelier_front.png"},
+  tiles = {"default_obsidian.png", "default_steel_block.png", "default_steel_block.png",
+    "default_steel_block.png", "default_steel_block.png", "bijoux_atelier_front.png"},
   paramtype2 = "facedir",
   groups = {crumbly=3},
   legacy_facedir_simple = true,
@@ -120,12 +121,19 @@ minetest.register_abm({
 	interval = 1,
 	chance = 1,
 	action = function(pos, node, active_object_count, active_object_count_wider)
-		meta = minetest.get_meta(pos)
-		inv = meta:get_inventory()
+		local meta = minetest.get_meta(pos)
+		local inv = meta:get_inventory()
 		
-		inputstack = inv:get_list("input")[1]
-		outputstack = inv:get_list("output")[1]
-		toolstack = inv:get_list("tool")[1]
+		if not inv:get_list("input")
+			or not inv:get_list("output")
+			or not inv:get_list("output") then
+			return
+			-- Security.
+		end
+
+		local inputstack = inv:get_list("input")[1]
+		local outputstack = inv:get_list("output")[1]
+		local toolstack = inv:get_list("tool")[1]
 		
 		
 		if meta:get_string("status") == "enable" then
@@ -146,25 +154,26 @@ minetest.register_abm({
 		
 		if inv:get_list("input")[1]:get_name() ~= ""
 			and inv:get_list("tool")[1]:get_name() ~= ""
-			and atelier.recipes[inv:get_list("input")[1]:get_name()].output ~= nil
-			and atelier.recipes[inputstack:get_name()].duration-1 <= meta:get_int("tick") then
+			and atelier.recipes[inv:get_list("input")[1]:get_name()].output ~= nil then
 			
 			if not (inv:get_list("output")[1]:get_name() == "" or inv:get_list("output")[1]:get_name() == atelier.recipes[inputstack:get_name()].output) then return end
 			
-			meta:set_int("tick",0)
+			if atelier.recipes[inputstack:get_name()].duration-1 <= meta:get_int("tick") then
 			
-			inv:set_list("output", {[1] = atelier.recipes[inputstack:get_name()].output.." "..outputstack:get_count()+1})
+				meta:set_int("tick",0)
 			
-			inputstack:set_count(inputstack:get_count()-1)
-			inv:set_list("input",{[1] = inputstack})
+				inv:set_list("output", {[1] = atelier.recipes[inputstack:get_name()].output.." "..outputstack:get_count()+1})
+			
+				inputstack:set_count(inputstack:get_count()-1)
+				inv:set_list("input",{[1] = inputstack})
+			end
 
-			--print(toolstack:get_wear()+minetest.registered_tools[toolstack:get_name()].tool_capabilities.groupcaps.cracky.times[1]*1.5*10000)
-			--if toolstack:get_wear()+minetest.registered_tools[toolstack:get_name()].tool_capabilities.groupcaps.cracky.times[1]*1*10000 > 65534 then
-			if toolstack:get_wear()+10000 > 65534 then
+			local tool_numofgems = 20 - minetest.registered_tools[toolstack:get_name()].tool_capabilities.groupcaps.cracky.times[3]*10
+			
+			if toolstack:get_wear()+65534/tool_numofgems >= 65534 then
 				inv:set_list("tool",{[1] = ""})
 			else
-				--toolstack:set_wear(toolstack:get_wear()+minetest.registered_tools[toolstack:get_name()].tool_capabilities.groupcaps.cracky.times[1]*1*10000 > 65534)
-				toolstack:set_wear(toolstack:get_wear()+10000)
+				toolstack:set_wear(toolstack:get_wear()+65534/tool_numofgems)
 				inv:set_list("tool",{[1] = toolstack})
 			end
 			
@@ -179,62 +188,4 @@ minetest.register_abm({
 			end
 		end
 	end,
-})
-
-
-
--- Registering
-
-atelier.register_recipe({
-	output = "bijoux:perle",
-	input = "bijoux:perle_imparfaite",
-	tool = "bijoux:pioche",
-	duration = 1
-})
-
-
-atelier.register_recipe({
-	output = "bijoux:emeraude",
-	input = "bijoux:emeraude_imparfaite",
-	tool = "bijoux:pioche",
-	duration = 3
-})
-
-
-atelier.register_recipe({
-	output = "bijoux:jade",
-	input = "bijoux:jade_imparfait",
-	tool = "bijoux:pioche",
-	duration = 3
-})
-
-
-atelier.register_recipe({
-	output = "bijoux:lapis_lazuli",
-	input = "bijoux:lapis_lazuli_imparfait",
-	tool = "bijoux:pioche",
-	duration = 5
-})
-
-
-atelier.register_recipe({
-	output = "bijoux:rubis",
-	input = "bijoux:rubis_imparfait",
-	tool = "bijoux:pioche",
-	duration = 5
-})
-
-
-atelier.register_recipe({
-	output = "bijoux:saphir",
-	input = "bijoux:saphir_imparfait",
-	tool = "bijoux:pioche",
-	duration = 6
-})
-
-atelier.register_recipe({
-	output = "bijoux:topaze",
-	input = "bijoux:topaze_imparfaite",
-	tool = "bijoux:pioche",
-	duration = 7
 })

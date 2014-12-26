@@ -1,119 +1,60 @@
 bijoux = {}
 
-function bijoux.register_item_parfait(subname, images, description, groups, inputname, toolname, duration)
-	 minetest.register_craftitem("bijoux:" .. subname, {
-		tiles = images,
+------------------------------------------------------------------------
+------------------- FUNCTION to register item --------------------------
+function bijoux.register_item(subname, description, duration)
+	if not (subname and description and duration) then
+		-- Security, in case of we've not used all the needed parameters
+		return
+	end
+	
+	minetest.register_craftitem("bijoux:" .. subname, {
+		inventory_image = "bijoux_" .. subname .. ".png",
 		description = description,
-		groups = groups,
+		groups = {},
 	})
 	
---	atelier.register_recipe({
---		output = "bijoux:" .. subname,
---		input = "bijoux:".. inputname,
---		tool = "bijoux:" .. toolname,
---		duration = duration
-end
--- })
-
-bijoux.register_item_parfait("emeraude",
-	{"bijoux_emeraude.png"},
-	"Emeraude",
-	{})
---	"emeraude_imparfait",
---	"pioche",
---	"5")
-
-bijoux.register_item_parfait("saphir",
-	{"bijoux_saphir.png"},
-	"Saphir",
-	{})
+	minetest.register_craftitem("bijoux:" .. subname .. "_imparfait", {
+		inventory_image = "bijoux_" .. subname .. "_imparfait.png",
+		description = description .. " imparfait(e)",
+		groups = {},
+	})
 	
-bijoux.register_item_parfait("rubis",
-	{"bijoux_rubis.png"},
-	"Rubis",
-	{})
-	
-bijoux.register_item_parfait("topaze",
-	{"bijoux_topaze.png"},
-	"Topaze",
-	{})
-	
-bijoux.register_item_parfait("lapis_lazuli",
-	{"bijoux_lapis_lazuli.png"},
-	"Lapis Lazuli",
-	{})
-	
-bijoux.register_item_parfait("jade",
-	{"bijoux_jade.png"},
-	"Jade",
-	{})
-	
-bijoux.register_item_parfait("perle",
-	{"bijoux_perle.png"},
-	"Perle",
-	{})
-	
-	
-	
-function bijoux.register_item_parfait(subname, images, description, groups)
-	 minetest.register_craftitem("bijoux:" .. subname .. "_imparfait", {
-		tiles = images,
-		description = description,
-		groups = groups,
+	atelier.register_recipe({
+		output = "bijoux:" .. subname,
+		input = "bijoux:".. subname .. "_imparfait", -- toujours masc.
+		tool = "bijoux:pioche",
+		duration = duration
 	})
 end
-	
-bijoux.register_item_parfait("emeraude",
-	{"bijoux_emeraude_imparfaite.png"},
-	"Emeraude Imparfaite",
-	{input})
-	
-bijoux.register_item_parfait("saphir",
-	{"bijoux_saphir_imparfait.png"},
-	"Saphir Imparfait",
-	{input})
-	
-bijoux.register_item_parfait("rubis",
-	{"bijoux_rubis_imparfait.png"},
-	"Rubis Imparfait",
-	{input})
-	
-bijoux.register_item_parfait("topaze",
-	{"bijoux_topaze_imparfaite.png"},
-	"Topaze Imparfaite",
-	{input})
-	
-bijoux.register_item_parfait("lapis_lazuli",
-	{"bijoux_lapis_lazuli_imparfait.png"},
-	"Lapis Lazuli Imparfait",
-	{input})
-	
-bijoux.register_item_parfait("jade",
-	{"bijoux_jade_imparfait.png"},
-	"Jade Imparfait",
-	{input})
-	
-bijoux.register_item_parfait("perle",
-	{"bijoux_perle_imparfaite.png"},
-	"Perle Imparfaite",
-	{input})
-	
+
+----------------------------- ITEMS ------------------------------------
+bijoux.register_item("perle", "Perle", 1)
+bijoux.register_item("emeraude", "Emeraude", 3)
+bijoux.register_item("jade", "Jade", 3)
+bijoux.register_item("saphir", "Saphir", 5)
+bijoux.register_item("lapis_lazuli", "Lapis lazuli", 5)
+bijoux.register_item("rubis", "Rubis", 5)
+bijoux.register_item("saphir", "Saphir", 6)
+bijoux.register_item("topaze", "Topaze", 7)
+
+
 -- Outils
 
 minetest.register_craftitem("bijoux:pioche", {
 	description = "Pioche",
 	inventory_image = "bijoux_pioche.png",
-	groups={outils},
+	groups={},
 })
 
 minetest.register_craftitem("bijoux:odr", {
 	description = "Outil de raffinage",
 	inventory_image = "bijoux_odr.png",
-	groups={outils},
+	groups={},
 })
 
 minetest.register_craftitem("bijoux:odra", {
 	description = "Outil de raffinage avance",
 	inventory_image = "bijoux_odra.png",
-	groups={outils},
+	groups={},
 })
