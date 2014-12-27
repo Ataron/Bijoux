@@ -32,6 +32,10 @@ File details :
   - init.lua
   - items.lua
   - mapgen.lua
+<<<<<<< HEAD
+  - alia.lua
+=======
+>>>>>>> a91cfa38f32e172a88417e4ecfa93e2bb61ba78c
  
 Api.txt :
 
