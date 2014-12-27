@@ -31,8 +31,8 @@ atelier_formspec =
 	
 minetest.register_node("bijoux:atelier", {
   description = "Atelier",
-  tiles = {"default_obsidian.png", "default_steel_block.png", "default_steel_block.png",
-    "default_steel_block.png", "default_steel_block.png", "bijoux_atelier_front.png"},
+  tiles = {"bijoux_atelier_down.png", "bijoux_atelier_down.png", "bijoux_atelier_side.png",
+    "bijoux_atelier_side.png", "bijoux_atelier_back.png", "bijoux_atelier_front.png"},
   paramtype2 = "facedir",
   groups = {crumbly=3},
   legacy_facedir_simple = true,
