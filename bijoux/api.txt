@@ -1,0 +1,77 @@
+#######################################################
+##        Bijoux, mod for Minetest, by Ataron.       ##
+
+VERSION 0, not released (yet?)
+
+Api.txt version 1 last modified by Mg aka. LeMagnesium.
+	
+	Bijoux, a mod by Ataron creating decorations, tools, and a lot
+of stuff made of gems, which you have to found in the ground and prune
+to use.
+
+
+	You're free to custom/publish a fork of bijoux, if you don't
+appropriate yourself things you've not created.
+
+File details :
+
++ bijoux
+  |
+  + textures
+  | |
+  | - A_lot_of_foobar_stuff.png
+  | ...
+  |
+  - api.txt
+  - atelier.lua
+  - coffre.lua
+  - crafts.lua
+  - depends.txt
+  - function_register_items.lua
+  - function_register_nodes.lua
+  - init.lua
+  - items.lua
+  - mapgen.lua
+ 
+Api.txt :
+
+	Api.txt is this humble file in which you will get a lof of useful
+informations about how bijoux works.
+
+Atelier.lua :
+
+	This file contain the basic register function for the "atelier", in
+english "workbench". This workbench allows you to prune gems with basic
+tools such as mese pickaxe, wooden pickaxe, and so many more.
+	These "parfait" (perfect) gems are used to craft item and nodes.
+	The file also contain the mecanism, the ABM (ActiveBlockModifier)
+function used to make the workbench work, and finally it contains the
+recipe registration system. Registering a recipe means the workbench
+will detect an item inserted in it as prunable or not prunable. It
+proceeds in this way : it searchs if atelier.recipes[itemstring] exists,
+because if it does, it means the item designed by itemstring is
+classified as ready to be used, and prunable to give in exchange the
+item which its itemstring is atelier.recipes[itemstring].
+	To put it in a nutshell, it's like a craft registration.
+	The function to register works like this :
+	
+	atelier.register_recipe(parameters)
+	^
+	parameters is a table that must contain these things :
+		- output   : The item given in exchange of the item inserted
+		- input    : The item that will be exchanged for output item
+		- duration : The time you will have to wait to prune the gem
+		
+	eg. :
+	
+	atelier.register_recipe({
+		output = "bijoux:perle",
+		input  = "bijoux:perle_imparfait",
+		duration = 5
+	})
+	
+	WARNING: It's deprecated to register manually an item and its output
+	because the	function is usually used with some other specific
+	functions. Otherwise, if you're sure about what you do, go haed!
+	
+

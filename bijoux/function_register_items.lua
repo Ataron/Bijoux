@@ -23,7 +23,7 @@ function bijoux.register_item(subname, description, duration)
 	atelier.register_recipe({
 		output = "bijoux:" .. subname,
 		input = "bijoux:".. subname .. "_imparfait", -- toujours masc.
-		tool = "bijoux:pioche",
+		--tool = "bijoux:pioche",
 		duration = duration
 	})
 end
