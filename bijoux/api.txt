@@ -1,9 +1,9 @@
-#######################################################
-##        Bijoux, mod for Minetest, by Ataron.       ##
+########################################################################
+####              Bijoux, mod for Minetest, by Ataron.              ####
 
 VERSION 0, not released (yet?)
 
-Api.txt version 1 last modified by Mg aka. LeMagnesium.
+Api.txt version 2 last modified by Mg aka. LeMagnesium.
 	
 	Bijoux, a mod by Ataron creating decorations, tools, and a lot
 of stuff made of gems, which you have to found in the ground and prune
@@ -22,6 +22,7 @@ File details :
   | - A_lot_of_foobar_stuff.png
   | ...
   |
+  - alia.lua
   - api.txt
   - atelier.lua
   - coffre.lua
@@ -30,17 +31,26 @@ File details :
   - function_register_items.lua
   - function_register_nodes.lua
   - init.lua
-  - items.lua
   - mapgen.lua
-<<<<<<< HEAD
-  - alia.lua
-=======
->>>>>>> a91cfa38f32e172a88417e4ecfa93e2bb61ba78c
- 
+  - Todo.txt
+
+########################################################################
+
+Alia.txt :
+
+	Alia.txt contains the aliases allowing the support of old naming
+system, and reducing some itemstring names to be more easily lernable.
+	The old system was in french, in which adjectives change depending
+on the gender. It was a problem because we've had to use "male/female"
+items in two different ways. The new system must be using english,
+without any gender changes.
+
+
 Api.txt :
 
 	Api.txt is this humble file in which you will get a lof of useful
 informations about how bijoux works.
+
 
 Atelier.lua :
 
@@ -78,4 +88,12 @@ item which its itemstring is atelier.recipes[itemstring].
 	because the	function is usually used with some other specific
 	functions. Otherwise, if you're sure about what you do, go haed!
 	
+
+Coffre.lua :
+
+	This file contains the definitions of emeraude chests and case, in
+which you will find locked chests. These locked chests work like the
+default ones.
+
+
 
